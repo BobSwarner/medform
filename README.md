@@ -23,6 +23,13 @@ Generate a secret key with:
     gunicorn -w 2 -b 127.0.0.1:8002 wsgi:app    # nginx proxies to this
     python3 -m pytest -q                        # tests use in-memory SQLite
 
+## Running as a service
+
+`deploy/medform.service` is a systemd unit (starts on boot, restarts on failure). Install with
+`sudo cp deploy/medform.service /etc/systemd/system/ && sudo systemctl daemon-reload &&
+sudo systemctl enable --now medform`. After that, `./restart.sh` just runs
+`sudo systemctl restart medform`; logs are in `journalctl -u medform`.
+
 ## Admin console
 
 Create (or reset) an admin user, then sign in at `/admin/`:

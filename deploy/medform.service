@@ -1,0 +1,17 @@
+# Install: sudo cp deploy/medform.service /etc/systemd/system/ && sudo systemctl daemon-reload \
+#          && sudo systemctl enable --now medform
+[Unit]
+Description=medform (Gunicorn)
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+User=bswarner
+WorkingDirectory=/data/homes/bswarner/medform
+EnvironmentFile=/data/homes/bswarner/medform/.env
+ExecStart=/data/homes/bswarner/medform/.venv/bin/gunicorn -w 2 -b 192.168.0.11:8002 wsgi:app
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

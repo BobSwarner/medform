@@ -6,6 +6,17 @@
 set -euo pipefail
 
 cd "$(dirname "$(readlink -f "$0")")"
+
+# If the systemd service is installed, let it manage the server (see deploy/medform.service).
+if systemctl is-enabled --quiet medform 2>/dev/null; then
+    case "${1:-}" in
+        stop) sudo systemctl stop medform ;;
+        *)    sudo systemctl restart medform ;;
+    esac
+    systemctl --no-pager status medform | sed -n 1,4p
+    exit 0
+fi
+
 BIND="${BIND:-192.168.0.11:8002}"
 PIDFILE="$PWD/gunicorn.pid"
 LOG="$PWD/gunicorn.log"
