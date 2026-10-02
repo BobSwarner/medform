@@ -1,0 +1,26 @@
+# Secrets and local config
+.env
+*.env
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/
+
+# Local databases and dumps (never commit client data)
+*.db
+*.sqlite
+*.sqlite3
+*.dump
+*.sql.gz
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini

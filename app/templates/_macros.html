@@ -1,0 +1,29 @@
+{% macro field(f, cls="") %}
+  <div class="field {{ cls }}{% if f.errors %} has-error{% endif %}">
+    {{ f.label }}
+    {{ f(**kwargs) }}
+    {% if f.description %}<small class="help">{{ f.description }}</small>{% endif %}
+    {% for e in f.errors %}<small class="error">{{ e }}</small>{% endfor %}
+  </div>
+{% endmacro %}
+
+{% macro medication_row(m) %}
+  <fieldset class="row-card" data-row="medications">
+    <legend>Medication <span class="row-num"></span></legend>
+    {{ field(m.name, autocomplete="off") }}
+    {{ field(m.dosage, autocomplete="off") }}
+    {{ field(m.frequency, class="js-frequency") }}
+    {{ field(m.frequency_other, cls="js-other") }}
+    <button type="button" class="link-btn js-remove">Remove this medication</button>
+  </fieldset>
+{% endmacro %}
+
+{% macro doctor_row(d) %}
+  <fieldset class="row-card" data-row="doctors">
+    <legend>Doctor <span class="row-num"></span></legend>
+    {{ field(d.name, autocomplete="off") }}
+    {{ field(d.specialty) }}
+    {{ field(d.phone, type="tel", autocomplete="off") }}
+    <button type="button" class="link-btn js-remove">Remove this doctor</button>
+  </fieldset>
+{% endmacro %}

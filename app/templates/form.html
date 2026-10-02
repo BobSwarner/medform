@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field, medication_row, doctor_row %}
+
+{% block content %}
+<h1>Medication and Doctor Information</h1>
+<p class="intro">
+  Please list the prescription medications you currently take and the doctors who care for you.
+  This information helps us review your coverage options accurately. It will be used only for
+  that purpose and stored securely. Please do not enter your Social Security number or Medicare
+  number on this form. If you're unsure about any answer, write "not sure" and we'll follow up.
+</p>
+
+{% if form.errors %}
+  <div class="alert" role="alert">Please fix the highlighted fields below.</div>
+{% endif %}
+
+<form method="post" novalidate id="medform"
+      data-max-medications="{{ max_meds }}" data-max-doctors="{{ max_doctors }}">
+  {{ form.csrf_token }}
+
+  <section>
+    <h2>About you</h2>
+    {{ field(form.client_name, autocomplete="name") }}
+    {{ field(form.contact) }}
+  </section>
+
+  <section>
+    <h2>Your doctors</h2>
+    <div class="rows" id="doctors-rows">
+      {% for d in form.doctors %}{{ doctor_row(d.form) }}{% endfor %}
+    </div>
+    {% for e in form.doctors.errors if e is string %}<small class="error">{{ e }}</small>{% endfor %}
+    <button type="button" class="add-btn" data-add="doctors">+ Add another doctor</button>
+  </section>
+
+  <section>
+    <h2>Your medications</h2>
+    <div class="rows" id="medications-rows">
+      {% for m in form.medications %}{{ medication_row(m.form) }}{% endfor %}
+    </div>
+    {% for e in form.medications.errors if e is string %}<small class="error">{{ e }}</small>{% endfor %}
+    <button type="button" class="add-btn" data-add="medications">+ Add another medication</button>
+  </section>
+
+  <section>
+    <h2>Pharmacy</h2>
+    {{ field(form.pharmacy) }}
+  </section>
+
+  <section>
+    <div class="field checkbox{% if form.consent.errors %} has-error{% endif %}">
+      {{ form.consent() }} {{ form.consent.label }}
+      {% for e in form.consent.errors %}<small class="error">{{ e }}</small>{% endfor %}
+    </div>
+    <button type="submit" class="submit-btn">Submit</button>
+  </section>
+</form>
+
+{#- Blank rows that form.js clones. The "__i__" placeholder becomes the row index. -#}
+<template id="medications-template">{{ medication_row(blank_med) }}</template>
+<template id="doctors-template">{{ doctor_row(blank_doc) }}</template>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/form.js') }}" defer></script>
+{% endblock %}

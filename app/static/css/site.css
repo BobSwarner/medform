@@ -1,0 +1,38 @@
+:root {
+  --bg: #f7f7f5; --card: #fff; --text: #1c1c1c; --muted: #5f6368;
+  --border: #d9d9d4; --accent: #1f5f8b; --error: #b3261e;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #161616; --card: #202020; --text: #ececec; --muted: #a8a8a8;
+          --border: #3a3a3a; --accent: #7ab4dd; --error: #f2948d; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text);
+       font: 17px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.container { max-width: 680px; margin: 0 auto; padding: 24px 16px 64px; }
+h1 { font-size: 1.6rem; margin: 0 0 8px; }
+h2 { font-size: 1.15rem; margin: 32px 0 12px; }
+.intro { color: var(--muted); }
+.row-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+            padding: 16px; margin: 0 0 12px; }
+legend { font-weight: 600; padding: 0 6px; }
+.field { display: flex; flex-direction: column; margin-bottom: 14px; }
+.field label { font-weight: 500; margin-bottom: 4px; }
+input[type=text], input[type=tel], input:not([type]), select {
+  font: inherit; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--card); color: var(--text); width: 100%;
+}
+input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.help { color: var(--muted); margin-top: 4px; }
+.error { color: var(--error); margin-top: 4px; display: block; }
+.has-error input, .has-error select { border-color: var(--error); }
+.alert { border: 1px solid var(--error); color: var(--error); padding: 12px; border-radius: 8px; }
+.checkbox { flex-direction: row; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
+.checkbox input { width: 20px; height: 20px; margin-top: 3px; }
+.add-btn, .submit-btn { font: inherit; padding: 10px 16px; border-radius: 8px; cursor: pointer; }
+.add-btn { background: transparent; color: var(--accent); border: 1px dashed var(--accent); }
+.submit-btn { background: var(--accent); color: var(--bg); border: 0; font-weight: 600;
+              width: 100%; margin-top: 8px; }
+.link-btn { background: none; border: 0; color: var(--muted); text-decoration: underline;
+            cursor: pointer; font: inherit; font-size: .9rem; padding: 0; }
+[hidden] { display: none !important; }
