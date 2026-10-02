@@ -33,3 +33,6 @@ desktop.ini
 # Server logs
 *.log
 gunicorn.pid
+
+# Claude Code session files and worktrees
+.claude/
