@@ -39,10 +39,19 @@ def create_app(config_object="app.config.Config"):
             return ""
         return models.aware(dt).astimezone(ZoneInfo(app.config["DISPLAY_TZ"])).strftime(fmt)
 
+    from . import turnstile
+    if turnstile.enabled(app):
+        csp_script = "script-src 'self' https://challenges.cloudflare.com; "
+        csp_frame = "frame-src https://challenges.cloudflare.com; "
+    else:
+        csp_script, csp_frame = "script-src 'self'; ", ""
+        if not app.testing:
+            app.logger.warning("Turnstile is OFF: set TURNSTILE_SITE_KEY and TURNSTILE_SECRET_KEY")
+
     @app.after_request
     def security_headers(resp):
         resp.headers["Content-Security-Policy"] = (
-            "default-src 'self'; script-src 'self'; style-src 'self'; "
+            "default-src 'self'; " + csp_script + csp_frame + "style-src 'self'; "
             "frame-ancestors 'none'; form-action 'self'"
         )
         resp.headers["X-Content-Type-Options"] = "nosniff"

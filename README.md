@@ -38,7 +38,14 @@ Create (or reset) an admin user, then sign in at `/admin/`:
   `SENDER_NAME` (default `Dana`) signs the invitation email shown for each link.
 - Five failed sign-ins lock that account for 15 minutes.
 
+## Cloudflare Turnstile
+
+The client form and the admin login both require a Turnstile check when `TURNSTILE_SITE_KEY` and
+`TURNSTILE_SECRET_KEY` are set in `.env` (the app logs a warning at startup if they aren't).
+Create a widget for `medform.swarner.com` in the Cloudflare dashboard. For testing, Cloudflare's
+dummy keys always pass: site `1x00000000000000000000AA`, secret `1x0000000000000000000000000000000AA`.
+If Cloudflare can't be reached, verification fails and the form can't be submitted.
+
 ## Not built yet
 
 - TOTP for admin login, CSV export, audit log
-- Cloudflare Turnstile on the public form

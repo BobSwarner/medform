@@ -1,5 +1,5 @@
 {% extends "admin/_layout.html" %}
-{% from "_macros.html" import field %}
+{% from "_macros.html" import field, turnstile, turnstile_script %}
 {% block title %}Admin sign in{% endblock %}
 {% block admin %}
 <h1>Admin sign in</h1>
@@ -7,6 +7,8 @@
   {{ form.csrf_token }}
   {{ field(form.username, autocomplete="username") }}
   {{ field(form.password, autocomplete="current-password") }}
+  {{ turnstile(form) }}
   <button type="submit" class="submit-btn">Sign in</button>
 </form>
 {% endblock %}
+{% block scripts %}{{ turnstile_script() }}{% endblock %}

@@ -7,6 +7,21 @@
   </div>
 {% endmacro %}
 
+{% macro turnstile(form) %}
+  {% if config.TURNSTILE_SITE_KEY and config.TURNSTILE_SECRET_KEY %}
+  <div class="field{% if form.turnstile_errors %} has-error{% endif %}">
+    <div class="cf-turnstile" data-sitekey="{{ config.TURNSTILE_SITE_KEY }}"></div>
+    {% for e in form.turnstile_errors %}<small class="error">{{ e }}</small>{% endfor %}
+  </div>
+  {% endif %}
+{% endmacro %}
+
+{% macro turnstile_script() %}
+  {% if config.TURNSTILE_SITE_KEY and config.TURNSTILE_SECRET_KEY %}
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  {% endif %}
+{% endmacro %}
+
 {% macro medication_row(m) %}
   <fieldset class="row-card" data-row="medications">
     <legend>Medication <span class="row-num"></span></legend>

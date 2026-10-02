@@ -14,6 +14,10 @@ class Config:
     # Client links look like  <PUBLIC_BASE_URL>/f/<token>
     PUBLIC_BASE_URL = os.environ.get("PUBLIC_BASE_URL", "https://medform.swarner.com")
     INVITE_DAYS = 30
+
+    # Cloudflare Turnstile on the client form and admin login. Both keys must be set to enable it.
+    TURNSTILE_SITE_KEY = os.environ.get("TURNSTILE_SITE_KEY")
+    TURNSTILE_SECRET_KEY = os.environ.get("TURNSTILE_SECRET_KEY")
     SENDER_NAME = os.environ.get("SENDER_NAME", "Dana")  # signs the invitation email
     DISPLAY_TZ = "America/New_York"  # admin pages show times in this zone (stored as UTC)
 
@@ -37,3 +41,5 @@ class TestConfig(Config):
     WTF_CSRF_ENABLED = False
     SESSION_COOKIE_SECURE = False
     PUBLIC_BASE_URL = "https://medform.swarner.com"
+    TURNSTILE_SITE_KEY = None
+    TURNSTILE_SECRET_KEY = None

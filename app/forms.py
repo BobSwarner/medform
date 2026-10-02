@@ -6,6 +6,7 @@ from wtforms import (
 from wtforms.validators import DataRequired, Length, Optional, ValidationError
 
 from .models import FREQUENCY_CHOICES
+from .turnstile import TurnstileMixin
 
 
 class MedicationForm(Form):
@@ -58,7 +59,7 @@ class PharmacyForm(Form):
     )
 
 
-class SubmissionForm(FlaskForm):
+class SubmissionForm(TurnstileMixin, FlaskForm):
     client_name = StringField("Full name", validators=[DataRequired(), Length(max=200)])
     consent = BooleanField(
         "I understand this information will be used to review my coverage options.",
@@ -81,7 +82,7 @@ class SubmissionForm(FlaskForm):
             raise ValidationError("Too many pharmacies in one form.")
 
 
-class LoginForm(FlaskForm):
+class LoginForm(TurnstileMixin, FlaskForm):
     username = StringField("Username", validators=[DataRequired(), Length(max=80)])
     password = PasswordField("Password", validators=[DataRequired(), Length(max=200)])
 
