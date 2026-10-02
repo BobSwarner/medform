@@ -29,3 +29,6 @@ desktop.ini
 @eaDir/
 *@SynoEAStream
 *@SynoResource
+
+# Server logs
+*.log
