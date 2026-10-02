@@ -1,4 +1,4 @@
-// Repeating medication/doctor rows for the intake form.
+// Repeating medication/doctor/pharmacy rows for the intake form.
 // Keeps field names as  medications-0-name, medications-1-name, ...  so WTForms'
 // FieldList parses them, and renumbers after every add/remove so there are no gaps.
 (function () {
@@ -10,8 +10,9 @@
   const LIMITS = {
     medications: parseInt(form.dataset.maxMedications, 10) || 25,
     doctors: parseInt(form.dataset.maxDoctors, 10) || 10,
+    pharmacies: parseInt(form.dataset.maxPharmacies, 10) || 5,
   };
-  const NAME_RE = /^(medications|doctors)-(\d+|__i__)-/;
+  const NAME_RE = /^(medications|doctors|pharmacies)-(\d+|__i__)-/;
 
   const container = (kind) => document.getElementById(kind + "-rows");
   const rows = (kind) => Array.from(container(kind).querySelectorAll(":scope > fieldset"));
@@ -74,5 +75,6 @@
   // ---- Initial state (also restores rows after a server-side validation error) ----
   rows("medications").forEach(toggleOther);
   renumber("doctors");
+  renumber("pharmacies");
   renumber("medications");
 })();

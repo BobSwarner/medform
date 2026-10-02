@@ -27,3 +27,11 @@
     <button type="button" class="link-btn js-remove">Remove this doctor</button>
   </fieldset>
 {% endmacro %}
+
+{% macro pharmacy_row(p) %}
+  <fieldset class="row-card" data-row="pharmacies">
+    <legend>Pharmacy <span class="row-num"></span></legend>
+    {{ field(p.name, autocomplete="off") }}
+    <button type="button" class="link-btn js-remove">Remove this pharmacy</button>
+  </fieldset>
+{% endmacro %}

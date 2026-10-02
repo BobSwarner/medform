@@ -22,6 +22,9 @@ def base_data(**extra):
         "doctors-0-name": "Dr. Smith",
         "doctors-0-specialty": "Primary care",
         "doctors-1-name": "Dr. Lee",
+        "pharmacies-0-name": "CVS, Main St",
+        "pharmacies-1-name": "Walgreens, Oak Ave",
+        "pharmacies-2-name": "",
         "medications-0-name": "Lisinopril",
         "medications-0-dosage": "10 mg",
         "medications-0-frequency": "once_daily",
@@ -39,6 +42,7 @@ def test_form_renders(client):
     assert r.status_code == 200
     assert b'name="medications-0-name"' in r.data
     assert b"medications-__i__-name" in r.data  # template row for form.js
+    assert b"pharmacies-__i__-name" in r.data
     assert "no-store" in r.headers["Cache-Control"]
 
 
@@ -48,6 +52,7 @@ def test_valid_submission_saves_everything(client):
 
     sub = db.session.scalars(db.select(Submission)).one()
     assert [d.name for d in sub.doctors] == ["Dr. Smith", "Dr. Lee"]
+    assert [p.name for p in sub.pharmacies] == ["CVS, Main St", "Walgreens, Oak Ave"]  # blank row dropped
     meds = sub.medications
     assert [m.name for m in meds] == ["Lisinopril", "Metformin"]
     assert meds[0].frequency_other is None
@@ -77,3 +82,17 @@ def test_too_many_medications_rejected(client):
     r = client.post("/", data=data)
     assert r.status_code == 200
     assert b"Too many medications" in r.data
+
+
+def test_pharmacies_optional(client):
+    data = {k: v for k, v in base_data().items() if not k.startswith("pharmacies-")}
+    r = client.post("/", data=data)
+    assert r.status_code == 302
+    assert db.session.scalars(db.select(Submission)).one().pharmacies == []
+
+
+def test_too_many_pharmacies_rejected(client):
+    data = base_data(**{f"pharmacies-{i}-name": "X" for i in range(2, 8)})
+    r = client.post("/", data=data)
+    assert r.status_code == 200
+    assert b"Too many pharmacies" in r.data

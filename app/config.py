@@ -9,6 +9,7 @@ class Config:
     MAX_CONTENT_LENGTH = 64 * 1024  # a full form is a few KB; reject anything large
     MAX_MEDICATIONS = 25
     MAX_DOCTORS = 10
+    MAX_PHARMACIES = 5
 
     # Cookies are only ever sent over HTTPS (Cloudflare terminates TLS in front of nginx)
     SESSION_COOKIE_SECURE = True

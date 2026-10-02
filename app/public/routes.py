@@ -1,8 +1,8 @@
 from flask import Blueprint, current_app, redirect, render_template, url_for
 
 from ..extensions import db
-from ..forms import DoctorForm, MedicationForm, SubmissionForm
-from ..models import Doctor, Medication, Submission
+from ..forms import DoctorForm, MedicationForm, PharmacyForm, SubmissionForm
+from ..models import Doctor, Medication, Pharmacy, Submission
 
 bp = Blueprint("public", __name__)
 
@@ -20,17 +20,23 @@ def form():
             "form.html", form=form,
             max_meds=current_app.config["MAX_MEDICATIONS"],
             max_doctors=current_app.config["MAX_DOCTORS"],
+            max_pharmacies=current_app.config["MAX_PHARMACIES"],
             # Unbound rows for the <template> elements that form.js clones
             blank_med=MedicationForm(prefix="medications-__i__-"),
             blank_doc=DoctorForm(prefix="doctors-__i__-"),
+            blank_pharm=PharmacyForm(prefix="pharmacies-__i__-"),
         )
 
     submission = Submission(
         client_name=form.client_name.data.strip(),
         contact=form.contact.data.strip(),
-        pharmacy=_clean(form.pharmacy.data),
         consent_given=True,
     )
+
+    # Pharmacies are optional: blank rows are dropped rather than rejected.
+    names = [n for n in (_clean(e.form.name.data) for e in form.pharmacies.entries) if n]
+    for pos, name in enumerate(names):
+        submission.pharmacies.append(Pharmacy(position=pos, name=name))
 
     for pos, entry in enumerate(form.doctors.entries):
         submission.doctors.append(Doctor(

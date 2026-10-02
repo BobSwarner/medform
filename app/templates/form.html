@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "_macros.html" import field, medication_row, doctor_row %}
+{% from "_macros.html" import field, medication_row, doctor_row, pharmacy_row %}
 
 {% block content %}
 <h1>Medication and Doctor Information</h1>
@@ -15,7 +15,8 @@
 {% endif %}
 
 <form method="post" novalidate id="medform"
-      data-max-medications="{{ max_meds }}" data-max-doctors="{{ max_doctors }}">
+      data-max-medications="{{ max_meds }}" data-max-doctors="{{ max_doctors }}"
+      data-max-pharmacies="{{ max_pharmacies }}">
   {{ form.csrf_token }}
 
   <section>
@@ -43,8 +44,12 @@
   </section>
 
   <section>
-    <h2>Pharmacy</h2>
-    {{ field(form.pharmacy) }}
+    <h2>Your pharmacies</h2>
+    <div class="rows" id="pharmacies-rows">
+      {% for p in form.pharmacies %}{{ pharmacy_row(p.form) }}{% endfor %}
+    </div>
+    {% for e in form.pharmacies.errors if e is string %}<small class="error">{{ e }}</small>{% endfor %}
+    <button type="button" class="add-btn" data-add="pharmacies">+ Add another pharmacy</button>
   </section>
 
   <section>
@@ -59,6 +64,7 @@
 {#- Blank rows that form.js clones. The "__i__" placeholder becomes the row index. -#}
 <template id="medications-template">{{ medication_row(blank_med) }}</template>
 <template id="doctors-template">{{ doctor_row(blank_doc) }}</template>
+<template id="pharmacies-template">{{ pharmacy_row(blank_pharm) }}</template>
 {% endblock %}
 
 {% block scripts %}

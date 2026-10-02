@@ -50,18 +50,24 @@ class DoctorForm(Form):
     phone = StringField("Doctor’s phone number", validators=[Optional(), Length(max=30)])
 
 
+class PharmacyForm(Form):
+    name = StringField(
+        "Pharmacy name and location",
+        validators=[Optional(), Length(max=200)],
+        description="Example: CVS, Main Street, Springfield.",
+    )
+
+
 class SubmissionForm(FlaskForm):
     client_name = StringField("Full name", validators=[DataRequired(), Length(max=200)])
     contact = StringField("Phone number or email", validators=[DataRequired(), Length(max=200)])
-    pharmacy = StringField(
-        "Pharmacy name and location", validators=[Optional(), Length(max=200)]
-    )
     consent = BooleanField(
         "I understand this information will be used to review my coverage options.",
         validators=[DataRequired(message="Please confirm to continue.")],
     )
     medications = FieldList(FormField(MedicationForm), min_entries=1)
     doctors = FieldList(FormField(DoctorForm), min_entries=1)
+    pharmacies = FieldList(FormField(PharmacyForm), min_entries=1)
 
     def validate_medications(self, field):
         if len(field.entries) > current_app.config["MAX_MEDICATIONS"]:
@@ -70,3 +76,7 @@ class SubmissionForm(FlaskForm):
     def validate_doctors(self, field):
         if len(field.entries) > current_app.config["MAX_DOCTORS"]:
             raise ValidationError("Too many doctors in one form.")
+
+    def validate_pharmacies(self, field):
+        if len(field.entries) > current_app.config["MAX_PHARMACIES"]:
+            raise ValidationError("Too many pharmacies in one form.")
