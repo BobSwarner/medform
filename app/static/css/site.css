@@ -1,6 +1,6 @@
 :root {
   --bg: #f7f7f5; --card: #fff; --text: #1c1c1c; --muted: #5f6368;
-  --border: #d9d9d4; --accent: #1f5f8b; --error: #b3261e;
+  --border: #d9d9d4; --accent: #0073b3; --error: #b3261e;
 }
 @media (prefers-color-scheme: dark) {
   :root { --bg: #161616; --card: #202020; --text: #ececec; --muted: #a8a8a8;
@@ -36,3 +36,8 @@ input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 1p
 .link-btn { background: none; border: 0; color: var(--muted); text-decoration: underline;
             cursor: pointer; font: inherit; font-size: .9rem; padding: 0; }
 [hidden] { display: none !important; }
+
+.site-header { max-width: 680px; margin: 0 auto; padding: 16px 16px 0; }
+.site-header img { display: block; width: 120px; height: auto; border-radius: 6px; background: #fff; }
+.site-footer { max-width: 680px; margin: 0 auto; padding: 0 16px 32px; color: var(--muted);
+               font-size: .9rem; text-align: center; }

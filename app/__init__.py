@@ -1,4 +1,5 @@
 from flask import Flask
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from .extensions import csrf, db, migrate
 
@@ -9,6 +10,9 @@ def create_app(config_object="app.config.Config"):
     for key in ("SECRET_KEY", "SQLALCHEMY_DATABASE_URI"):
         if not app.config.get(key):
             raise RuntimeError(f"{key} is not set (see .env.example)")
+
+    # Behind Caddy, which strips /medform and sends X-Forwarded-Prefix/Proto/Host
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1, x_prefix=1)
 
     db.init_app(app)
     migrate.init_app(app, db)
