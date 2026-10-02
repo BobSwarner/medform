@@ -58,8 +58,11 @@ def test_create_link_and_use_it(client):
     login(client)
     r = client.post("/admin/links", data={"client_name": "Mary Smith"}, follow_redirects=True)
     inv = db.session.scalars(db.select(Invite)).one()
-    full = f"https://swarner.com/medform/f/{inv.token}"
+    full = f"https://medform.swarner.com/f/{inv.token}"
     assert full.encode() in r.data
+    for text in (b"Hi Mary,", b"please complete this short form", b"valid for 30 days",
+                 b"Thanks,\nDana", b'class="add-btn js-copy"'):
+        assert text in r.data
     assert inv.client_name == "Mary Smith" and inv.created_by == "bob"
     assert 29 <= (inv.expires_at.replace(tzinfo=None) - utcnow().replace(tzinfo=None)).days <= 30
 

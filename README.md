@@ -31,10 +31,11 @@ Create (or reset) an admin user, then sign in at `/admin/`:
 
 - **Submissions** lists every submission, newest first; click one for the full details.
 - **Client links** creates a private link for a client's name:
-  `<PUBLIC_BASE_URL>/f/<token>`. The form opens only through a valid link (everything else,
+  `<PUBLIC_BASE_URL>/f/<token>`, shown as a ready-to-send email with a Copy button. The form opens only through a valid link (everything else,
   including `/`, is a 404), and the client's name is pre-filled. Links are multi-use,
   expire after `INVITE_DAYS` (30) and can be revoked.
-- Set `PUBLIC_BASE_URL` in `.env` if the public address isn't `https://swarner.com/medform`.
+- Set `PUBLIC_BASE_URL` in `.env` if the public address isn't `https://medform.swarner.com`.
+  `SENDER_NAME` (default `Dana`) signs the invitation email shown for each link.
 - Five failed sign-ins lock that account for 15 minutes.
 
 ## Not built yet

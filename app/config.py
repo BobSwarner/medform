@@ -12,8 +12,9 @@ class Config:
     MAX_PHARMACIES = 5
 
     # Client links look like  <PUBLIC_BASE_URL>/f/<token>
-    PUBLIC_BASE_URL = os.environ.get("PUBLIC_BASE_URL", "https://swarner.com/medform")
+    PUBLIC_BASE_URL = os.environ.get("PUBLIC_BASE_URL", "https://medform.swarner.com")
     INVITE_DAYS = 30
+    SENDER_NAME = os.environ.get("SENDER_NAME", "Dana")  # signs the invitation email
     DISPLAY_TZ = "America/New_York"  # admin pages show times in this zone (stored as UTC)
 
     # Admin sessions
@@ -35,3 +36,4 @@ class TestConfig(Config):
     SQLALCHEMY_ENGINE_OPTIONS = {}
     WTF_CSRF_ENABLED = False
     SESSION_COOKIE_SECURE = False
+    PUBLIC_BASE_URL = "https://medform.swarner.com"

@@ -62,3 +62,8 @@ input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 1p
 .badge-active { color: var(--accent); border-color: var(--accent); }
 .badge-expired, .badge-revoked { color: var(--muted); }
 .link-url { margin: 8px 0; font-size: .85rem; }
+.email-label { display: block; font-weight: 500; margin: 12px 0 4px; }
+.email-body { width: 100%; font: inherit; font-size: .95rem; padding: 10px 12px; margin-bottom: 8px;
+              border: 1px solid var(--border); border-radius: 8px; background: var(--card);
+              color: var(--text); resize: vertical; }
+.copy-status { margin-left: 10px; color: var(--muted); }

@@ -1,4 +1,5 @@
 from datetime import timedelta
+from zoneinfo import ZoneInfo
 
 from flask import (
     Blueprint, current_app, flash, redirect, render_template, session, url_for,
@@ -8,12 +9,37 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from ..extensions import db
 from ..forms import InviteForm, LoginForm
-from ..models import FREQUENCY_LABELS, AdminUser, Invite, Submission, utcnow
+from ..models import FREQUENCY_LABELS, AdminUser, Invite, Submission, aware, utcnow
 
 bp = Blueprint("admin", __name__, url_prefix="/admin")
 
 # Checked when the username doesn't exist, so response time doesn't reveal valid usernames.
 _DUMMY_HASH = generate_password_hash("not-a-real-password")
+
+
+def invite_url(invite):
+    return f"{current_app.config['PUBLIC_BASE_URL'].rstrip('/')}/f/{invite.token}"
+
+
+def email_body(invite):
+    """Plain-text invitation the admin copies into an email."""
+    cfg = current_app.config
+    first = invite.client_name.split()[0]
+    expires = aware(invite.expires_at).astimezone(ZoneInfo(cfg["DISPLAY_TZ"]))
+    return (
+        f"Hi {first},\n\n"
+        "To help us research the best healthcare plan for you, please complete this short form:\n\n"
+        f"{invite_url(invite)}\n\n"
+        f"This link is private and is valid for {cfg['INVITE_DAYS']} days "
+        f"(through {expires:%B} {expires.day}, {expires.year}).\n\n"
+        "Thanks,\n"
+        f"{cfg['SENDER_NAME']}\n"
+    )
+
+
+@bp.context_processor
+def _helpers():
+    return {"email_body": email_body}
 
 
 @bp.route("/login", methods=["GET", "POST"])
