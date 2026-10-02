@@ -23,10 +23,18 @@
     &middot; {{ inv.submissions|length }} submission{{ "" if inv.submissions|length == 1 else "s" }}
   </div>
   {% if inv.status == "active" %}
-  <label class="email-label" for="email-{{ inv.id }}">Email to send</label>
-  <textarea id="email-{{ inv.id }}" class="email-body" readonly rows="11">{{ email_body(inv) }}</textarea>
-  <button type="button" class="add-btn js-copy" data-target="email-{{ inv.id }}">Copy email</button>
-  <span class="copy-status" role="status" aria-live="polite"></span>
+  <div class="copy-group">
+    <label class="email-label" for="subject-{{ inv.id }}">Email subject</label>
+    <input type="text" id="subject-{{ inv.id }}" class="email-subject" readonly value="{{ email_subject }}">
+    <button type="button" class="add-btn js-copy" data-target="subject-{{ inv.id }}">Copy subject</button>
+    <span class="copy-status" role="status" aria-live="polite"></span>
+  </div>
+  <div class="copy-group">
+    <label class="email-label" for="email-{{ inv.id }}">Email body</label>
+    <textarea id="email-{{ inv.id }}" class="email-body" readonly rows="13">{{ email_body(inv) }}</textarea>
+    <button type="button" class="add-btn js-copy" data-target="email-{{ inv.id }}">Copy body</button>
+    <span class="copy-status" role="status" aria-live="polite"></span>
+  </div>
   <form method="post" action="{{ url_for('admin.revoke_link', invite_id=inv.id) }}">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <button type="submit" class="link-btn">Revoke this link</button>

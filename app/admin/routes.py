@@ -21,6 +21,9 @@ def invite_url(invite):
     return f"{current_app.config['PUBLIC_BASE_URL'].rstrip('/')}/f/{invite.token}"
 
 
+EMAIL_SUBJECT = "Please complete your healthcare plan form"
+
+
 def email_body(invite):
     """Plain-text invitation the admin copies into an email."""
     cfg = current_app.config
@@ -30,6 +33,7 @@ def email_body(invite):
         f"Hi {first},\n\n"
         "To help us research the best healthcare plan for you, please complete this short form:\n\n"
         f"{invite_url(invite)}\n\n"
+        "Please don't enter your Social Security number or Medicare number on the form.\n\n"
         f"This link is private and is valid for {cfg['INVITE_DAYS']} days "
         f"(through {expires:%B} {expires.day}, {expires.year}).\n\n"
         "Thanks,\n"
@@ -39,7 +43,7 @@ def email_body(invite):
 
 @bp.context_processor
 def _helpers():
-    return {"email_body": email_body}
+    return {"email_body": email_body, "email_subject": EMAIL_SUBJECT}
 
 
 @bp.route("/login", methods=["GET", "POST"])

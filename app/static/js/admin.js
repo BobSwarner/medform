@@ -1,4 +1,4 @@
-// "Copy email" buttons on the Client links page.
+// "Copy subject" / "Copy body" buttons on the Client links page.
 (function () {
   "use strict";
 
@@ -17,7 +17,7 @@
     const btn = e.target.closest(".js-copy");
     if (!btn) return;
     const box = document.getElementById(btn.dataset.target);
-    const status = btn.parentElement.querySelector(".copy-status");
+    const status = btn.closest(".copy-group").querySelector(".copy-status");
     try {
       await copy(box.value, box);
       status.textContent = "Copied!";
