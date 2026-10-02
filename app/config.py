@@ -11,6 +11,16 @@ class Config:
     MAX_DOCTORS = 10
     MAX_PHARMACIES = 5
 
+    # Client links look like  <PUBLIC_BASE_URL>/f/<token>
+    PUBLIC_BASE_URL = os.environ.get("PUBLIC_BASE_URL", "https://swarner.com/medform")
+    INVITE_DAYS = 30
+    DISPLAY_TZ = "America/New_York"  # admin pages show times in this zone (stored as UTC)
+
+    # Admin sessions
+    PERMANENT_SESSION_LIFETIME = 8 * 60 * 60
+    LOGIN_MAX_FAILURES = 5
+    LOGIN_LOCKOUT_MINUTES = 15
+
     # Cookies are only ever sent over HTTPS (Cloudflare terminates TLS in front of nginx)
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_HTTPONLY = True

@@ -41,3 +41,24 @@ input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 1p
 .site-header img { display: block; width: 120px; height: auto; border-radius: 6px; background: #fff; }
 .site-footer { max-width: 680px; margin: 0 auto; padding: 0 16px 32px; color: var(--muted);
                font-size: .9rem; text-align: center; }
+
+.admin-nav { display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap;
+             padding-bottom: 12px; margin-bottom: 16px; border-bottom: 1px solid var(--border); }
+.admin-nav a { color: var(--accent); }
+.inline-form { margin-left: auto; }
+.alert.ok { border-color: var(--accent); color: var(--text); }
+.list { list-style: none; margin: 0; padding: 0; }
+.list li { border-bottom: 1px solid var(--border); }
+.list a { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+          padding: 12px 4px; color: inherit; text-decoration: none; }
+.list a:hover { background: var(--card); }
+.list-name { font-weight: 600; }
+.list-meta { color: var(--muted); font-size: .9rem; }
+.kv { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0; }
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; }
+.badge { font-size: .8rem; padding: 2px 8px; border-radius: 99px; border: 1px solid var(--border);
+         margin-left: 8px; }
+.badge-active { color: var(--accent); border-color: var(--accent); }
+.badge-expired, .badge-revoked { color: var(--muted); }
+.link-url { margin: 8px 0; font-size: .85rem; }

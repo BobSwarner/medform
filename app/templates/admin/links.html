@@ -1,0 +1,35 @@
+{% extends "admin/_layout.html" %}
+{% from "_macros.html" import field %}
+{% block title %}Client links{% endblock %}
+{% block admin %}
+<h1>Client links</h1>
+<p class="intro">
+  Enter the client’s name to create a private link. The form can only be opened with its link,
+  and the client’s name is pre-filled. Links expire after {{ config.INVITE_DAYS }} days.
+</p>
+<form method="post" novalidate>
+  {{ form.csrf_token }}
+  {{ field(form.client_name, autocomplete="off") }}
+  <button type="submit" class="submit-btn">Create link</button>
+</form>
+
+<h2>Existing links</h2>
+{% for inv in invites %}
+<div class="row-card">
+  <strong>{{ inv.client_name }}</strong>
+  <span class="badge badge-{{ inv.status }}">{{ inv.status }}</span>
+  <div class="list-meta">
+    Created {{ inv.created_at|localtime }} &middot; expires {{ inv.expires_at|localtime }}
+    &middot; {{ inv.submissions|length }} submission{{ "" if inv.submissions|length == 1 else "s" }}
+  </div>
+  <input type="text" readonly class="link-url" aria-label="Link for {{ inv.client_name }}"
+         value="{{ config.PUBLIC_BASE_URL.rstrip('/') }}/f/{{ inv.token }}">
+  {% if inv.status == "active" %}
+  <form method="post" action="{{ url_for('admin.revoke_link', invite_id=inv.id) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button type="submit" class="link-btn">Revoke this link</button>
+  </form>
+  {% endif %}
+</div>
+{% else %}<p class="intro">No links yet.</p>{% endfor %}
+{% endblock %}

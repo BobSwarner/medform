@@ -1,8 +1,8 @@
-from flask import Blueprint, current_app, redirect, render_template, url_for
+from flask import Blueprint, abort, current_app, redirect, render_template, url_for
 
 from ..extensions import db
 from ..forms import DoctorForm, MedicationForm, PharmacyForm, SubmissionForm
-from ..models import Doctor, Medication, Pharmacy, Submission
+from ..models import Doctor, Invite, Medication, Pharmacy, Submission
 
 bp = Blueprint("public", __name__)
 
@@ -12,9 +12,18 @@ def _clean(value):
     return value or None
 
 
-@bp.route("/", methods=["GET", "POST"])
-def form():
-    form = SubmissionForm()
+def _active_invite_or_404(token):
+    """The form is only reachable through a valid private link; anything else is a plain 404."""
+    invite = db.session.scalar(db.select(Invite).filter_by(token=token))
+    if invite is None or not invite.is_active:
+        abort(404)
+    return invite
+
+
+@bp.route("/f/<token>", methods=["GET", "POST"])
+def form(token):
+    invite = _active_invite_or_404(token)
+    form = SubmissionForm(data={"client_name": invite.client_name})
     if not form.validate_on_submit():
         return render_template(
             "form.html", form=form,
@@ -29,8 +38,8 @@ def form():
 
     submission = Submission(
         client_name=form.client_name.data.strip(),
-        contact=form.contact.data.strip(),
         consent_given=True,
+        invite=invite,
     )
 
     # Pharmacies are optional: blank rows are dropped rather than rejected.
@@ -61,9 +70,10 @@ def form():
     db.session.commit()
 
     # Redirect so a browser refresh can't resubmit, and don't echo any data back.
-    return redirect(url_for("public.thanks"))
+    return redirect(url_for("public.thanks", token=token))
 
 
-@bp.route("/thanks")
-def thanks():
+@bp.route("/f/<token>/thanks")
+def thanks(token):
+    _active_invite_or_404(token)
     return render_template("thanks.html")

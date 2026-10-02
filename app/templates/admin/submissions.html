@@ -1,0 +1,19 @@
+{% extends "admin/_layout.html" %}
+{% block title %}Submissions{% endblock %}
+{% block admin %}
+<h1>Submissions</h1>
+{% if not submissions %}
+  <p class="intro">No submissions yet.</p>
+{% else %}
+<ul class="list">
+  {% for s in submissions %}
+  <li>
+    <a href="{{ url_for('admin.submission_detail', submission_id=s.id) }}">
+      <span class="list-name">{{ s.client_name }}</span>
+      <span class="list-meta">{{ s.created_at|localtime }}</span>
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

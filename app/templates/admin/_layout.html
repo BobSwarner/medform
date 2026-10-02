@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+{% if current_user.is_authenticated %}
+<nav class="admin-nav">
+  <a href="{{ url_for('admin.submissions') }}">Submissions</a>
+  <a href="{{ url_for('admin.links') }}">Client links</a>
+  <form method="post" action="{{ url_for('admin.logout') }}" class="inline-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button type="submit" class="link-btn">Sign out ({{ current_user.username }})</button>
+  </form>
+</nav>
+{% endif %}
+{% for category, message in get_flashed_messages(with_categories=true) %}
+  <div class="alert {{ category }}" role="alert">{{ message }}</div>
+{% endfor %}
+{% block admin %}{% endblock %}
+{% endblock %}

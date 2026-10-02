@@ -23,7 +23,21 @@ Generate a secret key with:
     gunicorn -w 2 -b 127.0.0.1:8002 wsgi:app    # nginx proxies to this
     python3 -m pytest -q                        # tests use in-memory SQLite
 
+## Admin console
+
+Create (or reset) an admin user, then sign in at `/admin/`:
+
+    flask create-admin <username>      # prompts for a password (12+ chars)
+
+- **Submissions** lists every submission, newest first; click one for the full details.
+- **Client links** creates a private link for a client's name:
+  `<PUBLIC_BASE_URL>/f/<token>`. The form opens only through a valid link (everything else,
+  including `/`, is a 404), and the client's name is pre-filled. Links are multi-use,
+  expire after `INVITE_DAYS` (30) and can be revoked.
+- Set `PUBLIC_BASE_URL` in `.env` if the public address isn't `https://swarner.com/medform`.
+- Five failed sign-ins lock that account for 15 minutes.
+
 ## Not built yet
 
-- Admin login (Flask-Login + TOTP), submission list/detail, CSV export, audit log
+- TOTP for admin login, CSV export, audit log
 - Cloudflare Turnstile on the public form

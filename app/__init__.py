@@ -1,7 +1,9 @@
+from zoneinfo import ZoneInfo
+
 from flask import Flask
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-from .extensions import csrf, db, migrate
+from .extensions import csrf, db, login_manager, migrate
 
 
 def create_app(config_object="app.config.Config"):
@@ -17,10 +19,25 @@ def create_app(config_object="app.config.Config"):
     db.init_app(app)
     migrate.init_app(app, db)
     csrf.init_app(app)
+    login_manager.init_app(app)
 
-    from . import models  # noqa: F401  (register models for migrations)
+    from . import models
     from .public.routes import bp as public_bp
+    from .admin.routes import bp as admin_bp
+    from .cli import register_cli
     app.register_blueprint(public_bp)
+    app.register_blueprint(admin_bp)
+    register_cli(app)
+
+    @login_manager.user_loader
+    def load_admin(user_id):
+        return db.session.get(models.AdminUser, int(user_id))
+
+    @app.template_filter("localtime")
+    def localtime(dt, fmt="%b %d, %Y %I:%M %p %Z"):
+        if dt is None:
+            return ""
+        return models.aware(dt).astimezone(ZoneInfo(app.config["DISPLAY_TZ"])).strftime(fmt)
 
     @app.after_request
     def security_headers(resp):
@@ -29,7 +46,7 @@ def create_app(config_object="app.config.Config"):
             "frame-ancestors 'none'; form-action 'self'"
         )
         resp.headers["X-Content-Type-Options"] = "nosniff"
-        resp.headers["Referrer-Policy"] = "no-referrer"
+        resp.headers["Referrer-Policy"] = "same-origin"  # CSRF over HTTPS needs a Referer on our own POSTs; nothing is sent cross-site
         resp.headers["Cache-Control"] = "no-store"  # don't cache pages holding health data
         return resp
 
