@@ -32,3 +32,4 @@ desktop.ini
 
 # Server logs
 *.log
+gunicorn.pid
