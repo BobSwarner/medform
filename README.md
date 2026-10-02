@@ -20,7 +20,7 @@ Generate a secret key with:
 
 ## Run
 
-    gunicorn -w 2 -b 127.0.0.1:8000 wsgi:app    # nginx proxies to this
+    gunicorn -w 2 -b 127.0.0.1:8002 wsgi:app    # nginx proxies to this
     python3 -m pytest -q                        # tests use in-memory SQLite
 
 ## Not built yet
