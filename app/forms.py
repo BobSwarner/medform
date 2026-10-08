@@ -48,7 +48,6 @@ class DoctorForm(Form):
         validators=[Optional(), Length(max=100)],
         description="Example: primary care, cardiology, endocrinology.",
     )
-    phone = StringField("Doctor’s phone number", validators=[Optional(), Length(max=30)])
 
 
 class PharmacyForm(Form):
@@ -65,9 +64,23 @@ class SubmissionForm(TurnstileMixin, FlaskForm):
         "I understand this information will be used to review my coverage options.",
         validators=[DataRequired(message="Please confirm to continue.")],
     )
+    no_medications = BooleanField("I don’t take any prescription medications.")
+    no_doctors = BooleanField("I don’t have a doctor.")
+    no_pharmacies = BooleanField("I don’t use a pharmacy.")
     medications = FieldList(FormField(MedicationForm), min_entries=1)
     doctors = FieldList(FormField(DoctorForm), min_entries=1)
     pharmacies = FieldList(FormField(PharmacyForm), min_entries=1)
+
+    def validate(self, extra_validators=None):
+        # A "none" box means that section is skipped entirely, so its rows aren't checked.
+        for flag, rows in (
+            (self.no_medications, self.medications),
+            (self.no_doctors, self.doctors),
+            (self.no_pharmacies, self.pharmacies),
+        ):
+            if flag.data:
+                rows.entries = []
+        return super().validate(extra_validators)
 
     def validate_medications(self, field):
         if len(field.entries) > current_app.config["MAX_MEDICATIONS"]:

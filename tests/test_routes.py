@@ -103,6 +103,21 @@ def test_too_many_medications_rejected(client, url):
     assert b"Too many medications" in r.data
 
 
+def test_none_boxes_skip_sections(client, url):
+    data = {"client_name": "Jane Doe", "consent": "y", "no_medications": "y",
+            "no_doctors": "y", "no_pharmacies": "y",
+            "medications-0-name": "", "doctors-0-name": ""}
+    r = client.post(url, data=data)
+    assert r.status_code == 302
+    sub = db.session.scalars(db.select(Submission)).one()
+    assert sub.medications == [] and sub.doctors == [] and sub.pharmacies == []
+
+
+def test_blank_rows_without_none_box_rejected(client, url):
+    r = client.post(url, data=base_data(**{"doctors-0-name": ""}))
+    assert r.status_code == 200
+
+
 def test_pharmacies_optional(client, url):
     data = {k: v for k, v in base_data().items() if not k.startswith("pharmacies-")}
     r = client.post(url, data=data)

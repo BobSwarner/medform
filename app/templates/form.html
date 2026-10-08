@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "_macros.html" import field, medication_row, doctor_row, pharmacy_row, turnstile, turnstile_script %}
+{% from "_macros.html" import field, none_box, medication_row, doctor_row, pharmacy_row, turnstile, turnstile_script %}
 
 {% block content %}
 <h1>Medication and Doctor Information</h1>
@@ -26,6 +26,7 @@
 
   <section>
     <h2>Your doctors</h2>
+    {{ none_box(form.no_doctors, "doctors") }}
     <div class="rows" id="doctors-rows">
       {% for d in form.doctors %}{{ doctor_row(d.form) }}{% endfor %}
     </div>
@@ -35,6 +36,7 @@
 
   <section>
     <h2>Your medications</h2>
+    {{ none_box(form.no_medications, "medications") }}
     <div class="rows" id="medications-rows">
       {% for m in form.medications %}{{ medication_row(m.form) }}{% endfor %}
     </div>
@@ -44,6 +46,7 @@
 
   <section>
     <h2>Your pharmacies</h2>
+    {{ none_box(form.no_pharmacies, "pharmacies") }}
     <div class="rows" id="pharmacies-rows">
       {% for p in form.pharmacies %}{{ pharmacy_row(p.form) }}{% endfor %}
     </div>

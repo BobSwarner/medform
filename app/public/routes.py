@@ -25,6 +25,10 @@ def form(token):
     invite = _active_invite_or_404(token)
     form = SubmissionForm(data={"client_name": invite.client_name})
     if not form.validate_on_submit():
+        # Skipped sections come back with no rows; give them one blank row so they can be reopened.
+        for rows in (form.medications, form.doctors, form.pharmacies):
+            if not rows.entries:
+                rows.append_entry()
         return render_template(
             "form.html", form=form,
             max_meds=current_app.config["MAX_MEDICATIONS"],
@@ -52,7 +56,6 @@ def form(token):
             position=pos,
             name=entry.form.name.data.strip(),
             specialty=_clean(entry.form.specialty.data),
-            phone=_clean(entry.form.phone.data),
         ))
 
     for pos, entry in enumerate(form.medications.entries):

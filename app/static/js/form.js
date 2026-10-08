@@ -30,7 +30,16 @@
       // A form must keep at least one row of each kind.
       row.querySelector(".js-remove").hidden = list.length === 1;
     });
-    form.querySelector(`[data-add="${kind}"]`).hidden = list.length >= LIMITS[kind];
+    form.querySelector(`[data-add="${kind}"]`).hidden =
+      list.length >= LIMITS[kind] || noneBox(kind).checked;
+  }
+
+  const noneBox = (kind) => form.querySelector(`.js-none[data-kind="${kind}"]`);
+
+  // "I don't have any" hides that section's rows; the server ignores them when it's checked.
+  function toggleNone(kind) {
+    container(kind).hidden = noneBox(kind).checked;
+    renumber(kind);
   }
 
   // Show the "If Other, please explain" box only when "Other" is selected.
@@ -69,6 +78,7 @@
   });
 
   form.addEventListener("change", (e) => {
+    if (e.target.matches(".js-none")) toggleNone(e.target.dataset.kind);
     if (e.target.matches(".js-frequency")) toggleOther(e.target.closest("fieldset"));
   });
 
@@ -77,4 +87,5 @@
   renumber("doctors");
   renumber("pharmacies");
   renumber("medications");
+  ["doctors", "medications", "pharmacies"].forEach(toggleNone);
 })();
