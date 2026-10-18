@@ -21,3 +21,9 @@ def register_cli(app):
         user.locked_until = None
         db.session.commit()
         click.echo(f"Admin '{username}' saved.")
+
+    @app.cli.command("init-db")
+    def init_db():
+        """Create any missing tables (idempotent; used by the container entrypoint)."""
+        db.create_all()
+        click.echo("Database ready.")

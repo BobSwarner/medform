@@ -23,6 +23,15 @@ Generate a secret key with:
     gunicorn -w 2 -b 127.0.0.1:8002 wsgi:app    # nginx proxies to this
     python3 -m pytest -q                        # tests use in-memory SQLite
 
+## Running in Docker
+
+    cp .env.example .env              # set SECRET_KEY and POSTGRES_PASSWORD (+ Turnstile keys)
+    docker compose up -d --build      # web on 127.0.0.1:8002 (override with BIND), Postgres in a volume
+    docker compose exec web flask create-admin <username>
+
+The entrypoint runs `flask init-db` (creates missing tables) before starting Gunicorn. Data lives in
+the `pgdata` volume. Logs: `docker compose logs -f web`.
+
 ## Running as a service
 
 `deploy/medform.service` is a systemd unit (starts on boot, restarts on failure). Install with
