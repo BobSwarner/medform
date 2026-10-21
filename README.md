@@ -25,12 +25,34 @@ Generate a secret key with:
 
 ## Running in Docker
 
-    cp .env.example .env              # set SECRET_KEY and POSTGRES_PASSWORD (+ Turnstile keys)
-    docker compose up -d --build      # web on 127.0.0.1:8002 (override with BIND), Postgres in a volume
-    docker compose exec web flask create-admin <username>
+The compose file runs only the medform container; it connects to an existing Postgres (e.g. on a Synology).
 
-The entrypoint runs `flask init-db` (creates missing tables) before starting Gunicorn. Data lives in
-the `pgdata` volume. Logs: `docker compose logs -f web`.
+1. Create the database and user once in Postgres:
+
+       CREATE USER medform_app WITH PASSWORD '...';
+       CREATE DATABASE medform OWNER medform_app;
+
+2. Configure and start:
+
+       cp .env.example .env              # set SECRET_KEY, DATABASE_URL (+ Turnstile keys, PUBLIC_BASE_URL)
+       docker compose up -d --build      # builds the image and starts it on 127.0.0.1:8002
+       docker compose exec medform flask create-admin <username>
+
+   In `DATABASE_URL` use the NAS/host IP or hostname, not `127.0.0.1` (that is the container itself).
+   Postgres must accept connections from the Docker network (`listen_addresses` / `pg_hba.conf`).
+
+3. Point the reverse proxy (e.g. Synology Application Portal) at `http://127.0.0.1:8002`. Set
+   `BIND=0.0.0.0:8002` in `.env` if the proxy is on another machine.
+
+The entrypoint runs `flask init-db` (creates missing tables) before starting Gunicorn, retrying until
+the database is reachable.
+
+Common commands:
+
+    docker compose logs -f medform                # logs
+    docker compose restart medform                # restart
+    docker compose up -d --build              # rebuild and redeploy after code changes
+    docker compose down                       # stop and remove the container
 
 ## Admin console
 
