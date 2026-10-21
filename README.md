@@ -32,13 +32,6 @@ Generate a secret key with:
 The entrypoint runs `flask init-db` (creates missing tables) before starting Gunicorn. Data lives in
 the `pgdata` volume. Logs: `docker compose logs -f web`.
 
-## Running as a service
-
-`deploy/medform.service` is a systemd unit (starts on boot, restarts on failure). Install with
-`sudo cp deploy/medform.service /etc/systemd/system/ && sudo systemctl daemon-reload &&
-sudo systemctl enable --now medform`. After that, `./restart.sh` just runs
-`sudo systemctl restart medform`; logs are in `journalctl -u medform`.
-
 ## Admin console
 
 Create (or reset) an admin user, then sign in at `/admin/`:
